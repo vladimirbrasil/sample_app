@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.7'
+gem 'pg', '0.12.2'
 
 group :development, :test do
-  gem 'sqlite3', '1.3.5'
   gem 'rspec-rails', '2.10.0'
   gem 'guard-rspec', '0.5.5'
 end
@@ -26,6 +26,3 @@ group :test do
   gem 'spork', '0.9.0' 
 end
 
-group :production do
-  gem 'pg', '0.12.2'
-end
