@@ -5,9 +5,7 @@
     </div>
     <ul>
     <% @user.errors.full_messages.each do |msg| %>
-      <% unless msg =~ /digest/ then %>
-        <li>* <%= msg %></li>
-      <% end %>
+      <li>* <%= msg %></li>
     <% end %>
     </ul>
   </div>
