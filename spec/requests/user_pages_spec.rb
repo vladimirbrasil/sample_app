@@ -46,6 +46,11 @@ describe "User pages" do
           expect { click_link('delete') }.to change(User, :count).by(-1)
         end
         it { should_not have_link('delete', href: user_path(admin)) }
+
+        describe "submitting a DELETE request to the Users#destroy action" do
+          before { delete user_path(admin) }
+          specify { response.should redirect_to(root_path) }        
+        end
       end
 
       describe "as non-admin user" do
@@ -59,6 +64,14 @@ describe "User pages" do
           specify { response.should redirect_to(root_path) }        
         end
       end      
+    end    
+  end
+
+  describe "accessible attributes" do
+    it "should not allow access to admin" do
+      expect do
+        User.new(admin: true)
+      end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
     end    
   end
 
@@ -101,7 +114,7 @@ describe "User pages" do
         fill_in "Name",         with: "Example User"
         fill_in "Email",        with: "user@example.com"
         fill_in "Password",     with: "foobar"
-        fill_in "Confirmation", with: "foobar"
+        fill_in "Confirm Password", with: "foobar"
       end
 
       it "should create a user" do

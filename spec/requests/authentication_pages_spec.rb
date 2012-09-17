@@ -13,11 +13,13 @@ describe "Authentication" do
       it { should have_selector('title', text: 'Sign in') }
 		  it { should have_error_message('Invalid') }
       it { should_not have_link('Settings') }
+      it { should_not have_link('Profile') }
+      it { should_not have_link('Sign out') }
+      it { should_not have_link('Users') }
 			
 			describe "after visiting another page" do
 			  before { click_link "Home" }
 			  it { should_not have_error_message }
-	#		  it { should_not have_selector('div.alert.alert-error') }
 			end    
     end
 
@@ -35,6 +37,10 @@ describe "Authentication" do
       describe "followed by signout" do
         before { click_link "Sign out" }
         it { should have_link('Sign in') }
+        it { should_not have_link('Settings') }
+        it { should_not have_link('Profile') }
+        it { should_not have_link('Sign out') }
+        it { should_not have_link('Users') }
       end
 		end
   end
@@ -57,6 +63,19 @@ describe "Authentication" do
           it "should render the desired protected page" do
             page.should have_selector('title', text: 'Edit user')
           end
+
+          describe "when signing in again" do
+            before do
+              visit signin_path
+              fill_in "Email",    with: user.email
+              fill_in "Password", with: user.password
+              click_button "Sign in"
+            end
+
+            it "should render the default (profile) page" do
+              page.should have_selector('title', text: user.name) 
+            end
+          end          
         end
       end
 
@@ -76,6 +95,21 @@ describe "Authentication" do
           before { visit users_path }
           it { should have_selector('title', text: 'Sign in') }
         end        
+      end
+    end
+
+    describe "for signed-in users" do
+      let(:user) { FactoryGirl.create(:user) }
+      before { sign_in user }
+
+      describe "visiting Users#new page" do
+        before { visit new_user_path(user) }
+        it { should_not have_selector('title', text: full_title('Sign up')) }
+      end
+
+      describe "submitting a POST request to the Users#create action" do
+        before { post users_path }
+        specify { response.should redirect_to(root_path) }
       end
     end
 
