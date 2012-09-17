@@ -23,11 +23,7 @@ describe "Authentication" do
 
     describe "with valid information" do
 			let(:user) { FactoryGirl.create(:user) }
-<<<<<<< HEAD
-      before { valid_signin(user) }
-=======
       before { sign_in user }
->>>>>>> updating-users
 
       it { should have_selector('title', text: user.name) }
       it { should have_link('Users',    href: users_path) }
