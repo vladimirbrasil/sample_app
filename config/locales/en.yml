@@ -6,3 +6,13 @@ en:
     attributes:
       user:
         password_digest: "Password"
+  shared: 
+    micropost_form: 
+      compose_micropost: "2Compose new micropost..."
+      post: 2Post
+      characters_remaining:
+        one: "%{count} character remaining."
+        other: "%{count} characters remaining."
+      characters_over:
+        one: "%{count} character over limit."
+        other: "%{count} characters over limit."

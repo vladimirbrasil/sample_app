@@ -31,7 +31,18 @@ describe "Micropost pages" do
     end
   end
 
+  describe "micropost from other users" do
+
+    let(:another_user) { FactoryGirl.create(:user) }
+    before do 
+      FactoryGirl.create(:micropost, user: another_user, content: "Dolor sit amet")
+      visit user_path(another_user) 
+    end
+    it { should_not have_link('delete') }
+  end
+
   describe "micropost destruction" do
+
     before { FactoryGirl.create(:micropost, user: user) }
 
     describe "as correct user" do

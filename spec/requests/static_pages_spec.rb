@@ -18,29 +18,51 @@ describe "Static pages" do
     it { should_not have_selector 'title', text: '| Home' }
 
     describe "for signed-in users" do
-      before do
-        DatabaseCleaner.strategy = :transaction
-        DatabaseCleaner.clean_with(:truncation)
-      end
-      before  { DatabaseCleaner.start }     
-      after   { DatabaseCleaner.clean }     
 
       let(:user) { FactoryGirl.create(:user) }
-      before do
-        100.times { FactoryGirl.create(:micropost) }
-        # FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
-        # FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
-        sign_in user
-        visit root_path
-      end
+      describe "with 0 microposts" do
+        before do
+          sign_in user
+          visit root_path
+        end
 
-      it "should render the user's feed" do
-#        user.feed.each do |item|
-        user.feed.paginate(page: 1).each do |item|
-          page.should have_selector("li##{item.id}", text: item.content)
+        describe "microposts count" do
+          it { should have_content(' 0 microposts') }
         end
       end
 
+      describe "with only 1 micropost" do
+        before do
+          FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
+          sign_in user
+          visit root_path
+        end
+
+        describe "microposts count" do
+          it { should have_content(' 1 micropost') }
+        end
+      end
+
+      describe "with 100 microposts" do
+        before do
+          100.times { FactoryGirl.create(:micropost, user: user) }
+          sign_in user
+          visit root_path
+        end
+
+        describe "microposts count" do
+          it { should have_content(" #{user.microposts.count} microposts") }
+        end
+
+        it { should have_selector('div.pagination') }
+
+        it "should render the user's feed" do
+          # user.feed.each do |item|
+          user.feed.paginate(page: 1).each do |item|
+            page.should have_selector("li##{item.id}", text: item.content)
+          end
+        end
+      end
     end
   end
 

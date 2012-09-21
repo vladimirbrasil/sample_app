@@ -1,4 +1,5 @@
 SampleApp::Application.routes.draw do
+  # scope "(:locale)"  do
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :microposts, only: [:create, :destroy]
