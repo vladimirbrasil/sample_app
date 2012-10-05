@@ -201,11 +201,15 @@ describe User do
       @user.follow!(other_user)
     end
 
-    it "should destroy associated relationships" do
+    it "should have associated relationships" do
       relationships = @user.relationships
       relationships.each do |relationship|
         Relationship.find_by_id(relationship.id).should_not be_nil
       end
+    end
+
+    it "should destroy associated relationships" do
+      relationships = @user.relationships
       @user.destroy
       relationships.each do |relationship|
         Relationship.find_by_id(relationship.id).should be_nil
